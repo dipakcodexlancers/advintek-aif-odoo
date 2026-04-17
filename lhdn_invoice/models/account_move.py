@@ -56,7 +56,7 @@ class AccountMove(models.Model):
             # -------------------------------
             # API CONFIG
             # -------------------------------
-            url = "https://your-irbm-api-endpoint.com/submit"
+            url = "http://localhost:7005/eInvoice/Submit"
 
             headers = {
                 "Content-Type": "application/json",
