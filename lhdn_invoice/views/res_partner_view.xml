@@ -24,18 +24,19 @@
 
     <!-- ================= LIST VIEW ================= -->
     <record id="view_partner_tree_lhdn" model="ir.ui.view">
-        <field name="name">res.partner.lhdn.tree</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_tree"/>
-        <field name="arch" type="xml">
+    <field name="name">res.partner.lhdn.tree</field>
+    <field name="model">res.partner</field>
+    <field name="inherit_id" ref="base.view_partner_tree"/>
+    <field name="arch" type="xml">
 
-            <xpath expr="//tree" position="inside">
-                <field name="lhdn_tin"/>
-                <field name="lhdn_id_type"/>
-                <field name="lhdn_id_value"/>
-            </xpath>
+        <!-- SAFE xpath -->
+        <xpath expr="//field[@name='email']" position="after">
+            <field name="lhdn_tin"/>
+            <field name="lhdn_id_type"/>
+            <field name="lhdn_id_value"/>
+        </xpath>
 
-        </field>
-    </record>
+    </field>
+</record>
 
 </odoo>
