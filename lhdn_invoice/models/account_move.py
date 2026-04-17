@@ -1,14 +1,120 @@
 from odoo import models, fields
+import requests
+import json
+from datetime import datetime
+
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    # Button action
+    # -------------------------------
+    # Button Action
+    # -------------------------------
     def action_submit_irbm(self):
         for rec in self:
-            rec.message_post(body="IRBM Button Clicked")
 
+            # -------------------------------
+            # Build Payload
+            # -------------------------------
+            payload = {
+                "invoice": {
+                    "number": rec.name,
+                    "date": str(rec.invoice_date) if rec.invoice_date else "",
+                    "total": rec.amount_total,
+                    "currency": rec.currency_id.name,
+                },
+                "customer": {
+                    "name": rec.partner_id.name,
+                    "email": rec.partner_id.email,
+                    "phone": rec.partner_id.phone,
+                    "tin": rec.partner_id.lhdn_tin,
+                    "id_type": rec.partner_id.lhdn_id_type,
+                    "id_value": rec.partner_id.lhdn_id_value,
+                },
+                "company": {
+                    "name": rec.company_id.name,
+                    "email": rec.company_id.email,
+                    "phone": rec.company_id.phone,
+                    "tin": rec.company_id.lhdn_tin,
+                    "id_type": rec.company_id.lhdn_id_type,
+                    "id_value": rec.company_id.lhdn_id_value,
+                    "msic_code": rec.company_id.lhdn_msic_code,
+                    "business_activity": rec.company_id.lhdn_business_activity,
+                },
+                "lines": [
+                    {
+                        "description": line.name,
+                        "quantity": line.quantity,
+                        "price": line.price_unit,
+                        "subtotal": line.price_subtotal,
+                        "tax": [t.name for t in line.tax_ids],
+                    }
+                    for line in rec.invoice_line_ids
+                ]
+            }
+
+            # -------------------------------
+            # API CONFIG
+            # -------------------------------
+            url = "https://your-irbm-api-endpoint.com/submit"
+
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer YOUR_TOKEN"  # change later
+            }
+
+            # -------------------------------
+            # API CALL
+            # -------------------------------
+            try:
+                response = requests.post(
+                    url,
+                    headers=headers,
+                    data=json.dumps(payload),
+                    timeout=30
+                )
+
+                # -------------------------------
+                # SUCCESS
+                # -------------------------------
+                if response.status_code == 200:
+                    data = response.json()
+
+                    rec.lhdn_status = "Submitted"
+                    rec.lhdn_uuid = data.get("uuid")
+                    rec.lhdn_validation_link = data.get("validation_link")
+                    rec.lhdn_validation_date = datetime.now()
+                    rec.lhdn_rejection_result = False
+
+                    rec.message_post(
+                        body="IRBM Submitted Successfully"
+                    )
+
+                # -------------------------------
+                # FAILURE (API RESPONSE)
+                # -------------------------------
+                else:
+                    rec.lhdn_status = "Failed"
+                    rec.lhdn_rejection_result = response.text
+
+                    rec.message_post(
+                        body=f"IRBM Submission Failed: {response.text}"
+                    )
+
+            # -------------------------------
+            # EXCEPTION (NETWORK / CODE ERROR)
+            # -------------------------------
+            except Exception as e:
+                rec.lhdn_status = "Error"
+                rec.lhdn_rejection_result = str(e)
+
+                rec.message_post(
+                    body=f"IRBM Error: {str(e)}"
+                )
+
+    # -------------------------------
     # Fields
+    # -------------------------------
     lhdn_status = fields.Char(string="Status")
     lhdn_uuid = fields.Char(string="UUID")
     lhdn_validation_date = fields.Datetime(string="Validation Date")
