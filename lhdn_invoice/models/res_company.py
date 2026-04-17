@@ -4,7 +4,13 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     lhdn_tin = fields.Char(string="TIN")
-    lhdn_id_type = fields.Char(string="Id Type")
+    # lhdn_id_type = fields.Char(string="Id Type")
+    lhdn_id_type = fields.Selection([
+        ('brn', 'BRN'),
+        ('nric', 'NRIC'),
+        ('passport', 'Passport'),
+        ('business', 'Business Registration'),
+    ], string="ID Type")
     lhdn_id_value = fields.Char(string="Id Value")
     lhdn_business_activity = fields.Char(string="Business Activity Description")
     lhdn_msic_code = fields.Char(string="MSIC Code")
