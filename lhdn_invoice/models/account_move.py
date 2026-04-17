@@ -7,15 +7,9 @@ from datetime import datetime
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
-    # -------------------------------
-    # Button Action
-    # -------------------------------
     def action_submit_irbm(self):
         for rec in self:
 
-            # -------------------------------
-            # Build Payload
-            # -------------------------------
             payload = {
                 "invoice": {
                     "number": rec.name,
@@ -53,21 +47,15 @@ class AccountMove(models.Model):
                 ]
             }
 
-            # -------------------------------
-            # API CONFIG
-            # -------------------------------
-            # url = "http://localhost:7005/eInvoice/Submit"
             url = "https://espresso-freezable-dealing.ngrok-free.dev/eInvoice/Submit"
 
             headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer YOUR_TOKEN"  # change later
+                "Content-Type": "application/json"
             }
 
-            # -------------------------------
-            # API CALL
-            # -------------------------------
             try:
+                rec.message_post(body=f"IRBM Payload: {json.dumps(payload)}")
+
                 response = requests.post(
                     url,
                     headers=headers,
@@ -75,9 +63,9 @@ class AccountMove(models.Model):
                     timeout=30
                 )
 
-                # -------------------------------
-                # SUCCESS
-                # -------------------------------
+                rec.message_post(body=f"IRBM Response Status: {response.status_code}")
+                rec.message_post(body=f"IRBM Response Body: {response.text}")
+
                 if response.status_code == 200:
                     data = response.json()
 
@@ -87,35 +75,20 @@ class AccountMove(models.Model):
                     rec.lhdn_validation_date = datetime.now()
                     rec.lhdn_rejection_result = False
 
-                    rec.message_post(
-                        body="IRBM Submitted Successfully"
-                    )
+                    rec.message_post(body="IRBM Submitted Successfully")
 
-                # -------------------------------
-                # FAILURE (API RESPONSE)
-                # -------------------------------
                 else:
                     rec.lhdn_status = "Failed"
                     rec.lhdn_rejection_result = response.text
 
-                    rec.message_post(
-                        body=f"IRBM Submission Failed: {response.text}"
-                    )
+                    rec.message_post(body="IRBM Submission Failed")
 
-            # -------------------------------
-            # EXCEPTION (NETWORK / CODE ERROR)
-            # -------------------------------
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
 
-                rec.message_post(
-                    body=f"IRBM Error: {str(e)}"
-                )
+                rec.message_post(body=f"IRBM Error: {str(e)}")
 
-    # -------------------------------
-    # Fields
-    # -------------------------------
     lhdn_status = fields.Char(string="Status")
     lhdn_uuid = fields.Char(string="UUID")
     lhdn_validation_date = fields.Datetime(string="Validation Date")
