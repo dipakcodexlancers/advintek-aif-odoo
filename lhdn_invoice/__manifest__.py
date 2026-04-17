@@ -8,6 +8,7 @@
     'depends': ['account'],
     'data': [
         'views/account_move_view.xml',
+        'views/res_partner_view.xml', 
     ],
     'installable': True,
     'application': False,
