@@ -56,7 +56,8 @@ class AccountMove(models.Model):
             # -------------------------------
             # API CONFIG
             # -------------------------------
-            url = "http://localhost:7005/eInvoice/Submit"
+            # url = "http://localhost:7005/eInvoice/Submit"
+            url = "https://espresso-freezable-dealing.ngrok-free.dev/eInvoice/Submit"
 
             headers = {
                 "Content-Type": "application/json",
