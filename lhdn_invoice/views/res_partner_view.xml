@@ -27,9 +27,9 @@
 
             <!-- Add columns -->
             <xpath expr="//list" position="inside">
-                <field name="lhdn_tin"/>
-                <field name="lhdn_id_type"/>
-                <field name="lhdn_id_value"/>
+                <field name="lhdn_tin" width="120"/>
+                <field name="lhdn_id_type" width="180"/>
+                <field name="lhdn_id_value" width="120"/>
             </xpath>
 
         </field>
