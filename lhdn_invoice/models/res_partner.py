@@ -5,7 +5,7 @@ class ResPartner(models.Model):
 
     lhdn_tin = fields.Char(string="TIN")
     lhdn_id_type = fields.Selection([
-        ('brn', 'BRN')
+        ('brn', 'BRN'),
         ('nric', 'NRIC'),
         ('passport', 'Passport'),
         ('business', 'Business Registration'),
