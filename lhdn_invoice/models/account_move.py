@@ -47,7 +47,7 @@ class AccountMove(models.Model):
                 ]
             }
 
-            url = "https://espresso-freezable-dealing.ngrok-free.dev/eInvoice/Submit"
+            url = "https://espresso-freezable-dealing.ngrok-free.dev/login/submit"
 
             headers = {
                 "Content-Type": "application/json"
