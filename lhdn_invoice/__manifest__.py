@@ -1,18 +1,14 @@
-<odoo>
-    <record id="view_move_form_inherit_lhdn" model="ir.ui.view">
-        <field name="name">account.move.lhdn.button</field>
-        <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_move_form"/>
-        <field name="arch" type="xml">
-
-            <xpath expr="//button[@name='action_post']" position="after">
-                <button name="action_submit_irbm"
-                        string="IRBM Submission"
-                        type="object"
-                        class="btn-primary"
-                        attrs="{'invisible': [('state','!=','posted')]}"/>
-            </xpath>
-
-        </field>
-    </record>
-</odoo>
+{
+    'name': 'LHDN Invoice',
+    'version': '1.0.0',
+    'summary': 'LHDN Integration Base Module',
+    'description': 'Base module for LHDN e-Invoice integration',
+    'author': 'Advintek',
+    'category': 'Accounting',
+    'depends': ['account'],
+    'data': [
+        'views/account_move_view.xml',
+    ],
+    'installable': True,
+    'application': False,
+}
