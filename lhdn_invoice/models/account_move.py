@@ -60,7 +60,7 @@ class AccountMove(models.Model):
                     url,
                     headers=headers,
                     data=json.dumps(payload),
-                    timeout=30
+                    timeout=10000
                 )
 
                 rec.message_post(body=f"IRBM Response Status: {response.status_code}")
