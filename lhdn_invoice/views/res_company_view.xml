@@ -6,23 +6,16 @@
         <field name="inherit_id" ref="base.view_company_form"/>
         <field name="arch" type="xml">
 
-            <!-- ADD AFTER CURRENCY -->
+            <!-- Add directly after Currency -->
             <xpath expr="//field[@name='currency_id']" position="after">
 
-                <group string="LHDN Details" col="2">
-
-                    <field name="lhdn_tin"/>
-                    <field name="lhdn_id_type"/>
-
-                    <field name="lhdn_id_value"/>
-                    <field name="lhdn_business_activity"/>
-
-                    <field name="lhdn_msic_code"/>
-                    <field name="lhdn_payment_means_code"/>
-
-                    <field name="lhdn_payment_terms"/>
-
-                </group>
+                <field name="lhdn_tin"/>
+                <field name="lhdn_id_type"/>
+                <field name="lhdn_id_value"/>
+                <field name="lhdn_business_activity"/>
+                <field name="lhdn_msic_code"/>
+                <field name="lhdn_payment_means_code"/>
+                <field name="lhdn_payment_terms"/>
 
             </xpath>
 
