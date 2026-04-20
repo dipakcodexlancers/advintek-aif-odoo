@@ -100,7 +100,7 @@ class AccountMove(models.Model):
                     submit_url,
                     headers=headers,
                     params={"eInvoiceTypeCode": invoice_type_code},
-                    json=payload,
+                    data=json.dumps(payload, default=str),
                     timeout=500
                 )
 
