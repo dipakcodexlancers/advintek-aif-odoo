@@ -10,38 +10,54 @@ class AccountMove(models.Model):
     def action_submit_irbm(self):
         for rec in self:
 
+            # payload = {
+            #     "invoice": {
+            #         "number": rec.name,
+            #         "date": str(rec.invoice_date) if rec.invoice_date else "",
+            #         "total": rec.amount_total,
+            #         "currency": rec.currency_id.name,
+            #     },
+            #     "customer": {
+            #         "name": rec.partner_id.name,
+            #         "email": rec.partner_id.email,
+            #         "phone": rec.partner_id.phone,
+            #         "tin": rec.partner_id.lhdn_tin,
+            #         "id_type": rec.partner_id.lhdn_id_type,
+            #         "id_value": rec.partner_id.lhdn_id_value,
+            #     },
+            #     "company": {
+            #         "name": rec.company_id.name,
+            #         "email": rec.company_id.email,
+            #         "phone": rec.company_id.phone,
+            #         "tin": rec.company_id.lhdn_tin,
+            #         "id_type": rec.company_id.lhdn_id_type,
+            #         "id_value": rec.company_id.lhdn_id_value,
+            #         "msic_code": rec.company_id.lhdn_msic_code,
+            #         "business_activity": rec.company_id.lhdn_business_activity,
+            #     },
+            #     "lines": [
+            #         {
+            #             "description": line.name,
+            #             "quantity": line.quantity,
+            #             "price": line.price_unit,
+            #             "subtotal": line.price_subtotal,
+            #             "tax": [t.name for t in line.tax_ids],
+            #         }
+            #         for line in rec.invoice_line_ids
+            #     ]
+            # }
+
             payload = {
-                "invoice": {
-                    "number": rec.name,
-                    "date": str(rec.invoice_date) if rec.invoice_date else "",
-                    "total": rec.amount_total,
-                    "currency": rec.currency_id.name,
-                },
-                "customer": {
-                    "name": rec.partner_id.name,
-                    "email": rec.partner_id.email,
-                    "phone": rec.partner_id.phone,
-                    "tin": rec.partner_id.lhdn_tin,
-                    "id_type": rec.partner_id.lhdn_id_type,
-                    "id_value": rec.partner_id.lhdn_id_value,
-                },
-                "company": {
-                    "name": rec.company_id.name,
-                    "email": rec.company_id.email,
-                    "phone": rec.company_id.phone,
-                    "tin": rec.company_id.lhdn_tin,
-                    "id_type": rec.company_id.lhdn_id_type,
-                    "id_value": rec.company_id.lhdn_id_value,
-                    "msic_code": rec.company_id.lhdn_msic_code,
-                    "business_activity": rec.company_id.lhdn_business_activity,
-                },
+                "invoice": rec.read()[0],
+
+                "partner": rec.partner_id.read()[0] if rec.partner_id else {},
+
+                "company": rec.company_id.read()[0] if rec.company_id else {},
+
                 "lines": [
                     {
-                        "description": line.name,
-                        "quantity": line.quantity,
-                        "price": line.price_unit,
-                        "subtotal": line.price_subtotal,
-                        "tax": [t.name for t in line.tax_ids],
+                        **line.read()[0],
+                        "taxes": [tax.read()[0] for tax in line.tax_ids]
                     }
                     for line in rec.invoice_line_ids
                 ]
