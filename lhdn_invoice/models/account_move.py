@@ -55,15 +55,37 @@ class AccountMove(models.Model):
 
             try:
 
-                # rec.message_post(body=f"IRBM Payload: {json.dumps(payload, default=str)}")
+                # login_url = "https://f136-2402-a00-173-38f2-29a1-9538-9b24-9821.ngrok-free.app/api/2026.1/OdooInvoiceFactoryExtended/JSONLogin"
+                
+                login_url = "https://espresso-freezable-dealing.ngrok-free.dev/api/2026.1/OdooInvoiceFactoryExtended/JSONLogin"
 
-                # response = requests.post(
-                #     url,
-                #     headers=headers,
-                #     data=json.dumps(payload, default=str),
-                #     timeout=10000
-                # )
+                login_payload = {
+                    "loginId": "techsupport",
+                    "password": "Workflow@007",
+                    "domain": "AIF_API_Dev"
+                }
 
+                login_headers = {
+                    "Content-Type": "application/json"
+                }
+
+                login_response = requests.post(
+                    login_url,
+                    headers=login_headers,
+                    json=login_payload,
+                    timeout=500
+                )
+                
+                rec.message_post(
+                    body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
+                )
+
+                if login_response.status_code != 200:
+                    raise Exception(f"Login API Failed: {login_response.text}")
+                
+                return
+
+                """
                 response = requests.post(
                     url,
                     headers=headers,
@@ -101,7 +123,7 @@ class AccountMove(models.Model):
                     rec.lhdn_rejection_result = error_msg
 
                     rec.message_post(body=f"IRBM Submission Failed: {error_msg}")
-
+                """
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
