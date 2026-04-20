@@ -102,23 +102,57 @@ class AccountMove(models.Model):
                 rec.message_post(body=f"IRBM Response Status: {response.status_code}")
                 rec.message_post(body=f"IRBM Response Body: {response.text}")
 
+                # if response.status_code == 200:
+                #     data = response.json()
+
+                #     rec.lhdn_status = "Submitted"
+                #     rec.lhdn_uuid = data.get("uuid")
+                #     rec.lhdn_validation_link = data.get("validation_link")
+                #     rec.lhdn_validation_date = datetime.now()
+                #     rec.lhdn_rejection_result = False
+
+                #     rec.message_post(body="IRBM Submitted Successfully")
+
                 if response.status_code == 200:
                     data = response.json()
 
-                    rec.lhdn_status = "Submitted"
+                    rec.lhdn_status = data.get("status")
                     rec.lhdn_uuid = data.get("uuid")
                     rec.lhdn_validation_link = data.get("validation_link")
-                    rec.lhdn_validation_date = datetime.now()
-                    rec.lhdn_rejection_result = False
 
-                    rec.message_post(body="IRBM Submitted Successfully")
+                    rec.lhdn_validation_date = datetime.now()
+
+                    rec.lhdn_rejection_result = data.get("rejection_result")
+
+                    # UI message
+                    if data.get("status") == "Success":
+                        rec.message_post(body="IRBM Submitted Successfully")
+                    else:
+                        rec.message_post(body=f"IRBM Failed: {data.get('message')}")
+
+                # else:
+                #     rec.lhdn_status = "Failed"
+                #     rec.lhdn_rejection_result = response.text
+
+                #     rec.message_post(body="IRBM Submission Failed")
 
                 else:
+                    try:
+                        error_data = response.json()
+                        error_msg = error_data.get("message", response.text)
+                    except Exception:
+                        error_msg = response.text
+
                     rec.lhdn_status = "Failed"
-                    rec.lhdn_rejection_result = response.text
+                    rec.lhdn_rejection_result = error_msg
 
-                    rec.message_post(body="IRBM Submission Failed")
+                    rec.message_post(body=f"IRBM Submission Failed: {error_msg}")
 
+            # except Exception as e:
+            #     rec.lhdn_status = "Error"
+            #     rec.lhdn_rejection_result = str(e)
+
+            #     rec.message_post(body=f"IRBM Error: {str(e)}")
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
