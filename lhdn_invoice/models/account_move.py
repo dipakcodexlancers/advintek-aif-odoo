@@ -70,12 +70,20 @@ class AccountMove(models.Model):
             }
 
             try:
-                rec.message_post(body=f"IRBM Payload: {json.dumps(payload)}")
+                # rec.message_post(body=f"IRBM Payload: {json.dumps(payload)}")
+
+                # response = requests.post(
+                #     url,
+                #     headers=headers,
+                #     data=json.dumps(payload),
+                #     timeout=10000
+                # )
+                rec.message_post(body=f"IRBM Payload: {json.dumps(payload, default=str)}")
 
                 response = requests.post(
                     url,
                     headers=headers,
-                    data=json.dumps(payload),
+                    data=json.dumps(payload, default=str),
                     timeout=10000
                 )
 
