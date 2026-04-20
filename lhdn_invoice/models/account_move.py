@@ -47,16 +47,8 @@ class AccountMove(models.Model):
 
             invoice_type_code = invoice_type_map.get(rec.move_type)
 
-            url = "https://espresso-freezable-dealing.ngrok-free.dev/Login/Submit"
-            
-            headers = {
-                "Content-Type": "application/json"
-            }
-
             try:
 
-                # login_url = "https://f136-2402-a00-173-38f2-29a1-9538-9b24-9821.ngrok-free.app/api/2026.1/OdooInvoiceFactoryExtended/JSONLogin"
-                
                 login_url = "https://espresso-freezable-dealing.ngrok-free.dev/api/2026.1/OdooInvoiceFactoryExtended/JSONLogin"
 
                 login_payload = {
@@ -83,47 +75,65 @@ class AccountMove(models.Model):
                 if login_response.status_code != 200:
                     raise Exception(f"Login API Failed: {login_response.text}")
                 
-                return
+                login_data = login_response.json()
+                token = login_data.get("data", {}).get("token")
 
-                """
+                if not token:
+                    raise Exception("Token not found in login response")
+                
+                submit_url = "https://espresso-freezable-dealing.ngrok-free.dev/api/2026.1/OdooInvoiceFactoryExtended/JSONSubmitInvoiceDocument"
+                
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {token}"
+                }
+
+                # response = requests.post(
+                #     url,
+                #     headers=headers,
+                #     params={"InvoiceTypeCode": invoice_type_code},
+                #     data=json.dumps(payload, default=str),
+                #     timeout=10000
+                # )
+                
                 response = requests.post(
-                    url,
+                    submit_url,
                     headers=headers,
-                    params={"InvoiceTypeCode": invoice_type_code},
-                    data=json.dumps(payload, default=str),
-                    timeout=10000
+                    params={"eInvoiceTypeCode": invoice_type_code},
+                    json=payload,
+                    timeout=500
                 )
 
-                rec.message_post(body=f"IRBM Response | Status: {response.status_code} | Body: {response.text}")
+                rec.message_post(body=f"SubmitInvoiceDocument Response | Status: {response.status_code} | Body: {response.text}")
 
-                if response.status_code == 200:
-                    data = response.json()
+                # if response.status_code == 200:
+                #     data = response.json()
 
-                    rec.lhdn_status = data.get("status")
-                    rec.lhdn_uuid = data.get("uuid")
-                    rec.lhdn_validation_link = data.get("validation_link")
+                #     rec.lhdn_status = data.get("status")
+                #     rec.lhdn_uuid = data.get("uuid")
+                #     rec.lhdn_validation_link = data.get("validation_link")
 
-                    rec.lhdn_validation_date = datetime.now()
+                #     rec.lhdn_validation_date = datetime.now()
 
-                    rec.lhdn_rejection_result = data.get("rejection_result")
+                #     rec.lhdn_rejection_result = data.get("rejection_result")
 
-                    if data.get("status") == "Success":
-                        rec.message_post(body="IRBM submission successful")
-                    else:
-                        rec.message_post(body=f"IRBM submission failed : {data.get('message')}")
+                #     if data.get("status") == "Success":
+                #         rec.message_post(body="IRBM submission successful")
+                #     else:
+                #         rec.message_post(body=f"IRBM submission failed : {data.get('message')}")
 
-                else:
-                    try:
-                        error_data = response.json()
-                        error_msg = error_data.get("message", response.text)
-                    except Exception:
-                        error_msg = response.text
+                # else:
+                #     try:
+                #         error_data = response.json()
+                #         error_msg = error_data.get("message", response.text)
+                #     except Exception:
+                #         error_msg = response.text
 
-                    rec.lhdn_status = "Failed"
-                    rec.lhdn_rejection_result = error_msg
+                #     rec.lhdn_status = "Failed"
+                #     rec.lhdn_rejection_result = error_msg
 
-                    rec.message_post(body=f"IRBM Submission Failed: {error_msg}")
-                """
+                #     rec.message_post(body=f"IRBM Submission Failed: {error_msg}")
+                
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
