@@ -55,7 +55,7 @@ class AccountMove(models.Model):
 
             try:
 
-                rec.message_post(body=f"IRBM Payload: {json.dumps(payload, default=str)}")
+                # rec.message_post(body=f"IRBM Payload: {json.dumps(payload, default=str)}")
 
                 # response = requests.post(
                 #     url,
@@ -72,8 +72,7 @@ class AccountMove(models.Model):
                     timeout=10000
                 )
 
-                rec.message_post(body=f"IRBM Response Status: {response.status_code}")
-                rec.message_post(body=f"IRBM Response Body: {response.text}")
+                rec.message_post(body=f"IRBM Response | Status: {response.status_code} | Body: {response.text}")
 
                 if response.status_code == 200:
                     data = response.json()
@@ -87,9 +86,9 @@ class AccountMove(models.Model):
                     rec.lhdn_rejection_result = data.get("rejection_result")
 
                     if data.get("status") == "Success":
-                        rec.message_post(body="IRBM Submitted Successfully")
+                        rec.message_post(body="IRBM submission successful")
                     else:
-                        rec.message_post(body=f"IRBM Failed: {data.get('message')}")
+                        rec.message_post(body=f"IRBM submission failed : {data.get('message')}")
 
                 else:
                     try:
