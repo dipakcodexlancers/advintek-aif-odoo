@@ -46,22 +46,33 @@ class AccountMove(models.Model):
             #         for line in rec.invoice_line_ids
             #     ]
             # }
+
+            invoice_data = rec.read()[0]
             
             payload = {
-                "invoice": rec.read()[0],
+                # "invoice": rec.read()[0],
+                "invoice": {
+                    **invoice_data,
+                    "lines": [
+                        {
+                            **line.read()[0],
+                            "taxes": [tax.read()[0] for tax in line.tax_ids]
+                        }
+                        for line in rec.invoice_line_ids
+                    ]
+                },
 
-                "lines": [
-                    {
-                        **line.read()[0],
-                        "taxes": [tax.read()[0] for tax in line.tax_ids]
-                    }
-                    for line in rec.invoice_line_ids
-                ]
-                
                 "partner": rec.partner_id.read()[0] if rec.partner_id else {},
 
                 "company": rec.company_id.read()[0] if rec.company_id else {},
 
+                # "lines": [
+                #     {
+                #         **line.read()[0],
+                #         "taxes": [tax.read()[0] for tax in line.tax_ids]
+                #     }
+                #     for line in rec.invoice_line_ids
+                # ]
             }
 
             url = "https://espresso-freezable-dealing.ngrok-free.dev/Login/Submit"
