@@ -37,6 +37,8 @@ class AccountMove(models.Model):
                     for line in rec.invoice_line_ids
                 ]
             }
+            
+            rec.message_post(payload)
 
             invoice_type_map = {
                 "out_invoice": "01",
