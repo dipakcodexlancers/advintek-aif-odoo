@@ -67,7 +67,7 @@ class AccountMove(models.Model):
                     login_url,
                     headers=login_headers,
                     json=login_payload,
-                    timeout=500
+                    timeout=50
                 )
                 
                 rec.message_post(
