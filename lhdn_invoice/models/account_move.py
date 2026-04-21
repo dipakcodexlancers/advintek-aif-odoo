@@ -50,7 +50,7 @@ class AccountMove(models.Model):
             invoice_type_code = invoice_type_map.get(rec.move_type)
 
             try:
-                """
+                
                 login_url = "https://espresso-freezable-dealing.ngrok-free.dev/api/2026.1/OdooInvoiceFactoryExtended/JSONLogin"
 
                 login_payload = {
@@ -82,9 +82,9 @@ class AccountMove(models.Model):
 
                 if not token:
                     raise Exception("Token not found in login response")
-                """
+                
                 submit_url = "https://espresso-freezable-dealing.ngrok-free.dev/api/2026.1/OdooInvoiceFactoryExtended/JSONSubmitInvoiceDocument"
-                token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJEb21haW4iOiJMaXBXTzdycDhsYWdnUkE1N1dvekxvRlhtT2xudDBhcGVvQVJBSzFxVzh4UmljSGhWNzBBeWk2dHIyZ1hMemZ3aWRzbXdXSEEzY0IxczVVUGVqVW5KVUNIaHJuQWJKS2dFa0swN0lDOVVpR2xPMmZ6ditWbDRoTzA5SjhxRURBTUJhRVZNdEVvdUdxZmlyZjNhNzhIeExYb3N1aE1mYVZBWG1PcklPbnhVL2JrT1kwY1Z3bXVtOTdzTVowdUhuUDY3TngvSXFoQWdqKzludFlFQ00xMHV0V0szY2tMRUVDQ05DQkRZVTdONHp4SlpQUEhBOU9ocjJrcFBqbTJmakFnOUd4SE1sMFJiY3pSd29qQXlHMGdMVUlmcjdTN1lCMEV2c0FBOWE1WmF2RT0iLCJMb2dpbklkIjoidGVjaHN1cHBvcnQiLCJDb21wYW55IjoiQUlGX0FQSV9EZXYiLCJleHAiOjE3NzY3NDg1ODB9.J0u6YD6HhFQMH-NJCyz3KlS509TYMkXJ9JSy8MCVipg"
+                
                 headers = {
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {token}"
