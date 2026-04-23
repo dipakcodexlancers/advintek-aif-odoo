@@ -70,12 +70,18 @@ class AccountMove(models.Model):
                     timeout=50
                 )
                 
-                rec.message_post(
-                    body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
+                if login_response.status_code = 200:(
+                    rec.message_post("Successfully connected to IRBM..")
                 )
+                # rec.message_post(
+                #     body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
+                # )
 
+                # if login_response.status_code != 200:
+                #     raise Exception(f"Login API Failed: {login_response.text}")
+                
                 if login_response.status_code != 200:
-                    raise Exception(f"Login API Failed: {login_response.text}")
+                    raise Exception(f"Unable to establish a connection with IRBM: {login_response.text}")
                 
                 login_data = login_response.json()
                 token = login_data.get("data", {}).get("token")
@@ -106,7 +112,14 @@ class AccountMove(models.Model):
                     timeout=500
                 )
 
-                rec.message_post(body=f"SubmitInvoiceDocument Response | Status: {response.status_code} | Body: {response.text}")
+                # rec.message_post(body=f"SubmitInvoiceDocument Response | Status: {response.status_code} | Body: {response.text}")
+                rec.message_post(
+                    body=(
+                        f"IRBM Submit Invoice Response:\n"
+                        f"- Status Code: {response.status_code}\n"
+                        f"- Response: {response.text}"
+                    )
+                )
 
                 # if response.status_code == 200:
                 #     data = response.json()
@@ -140,7 +153,8 @@ class AccountMove(models.Model):
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
 
-                rec.message_post(body=f"IRBM Error: {str(e)}")
+                # rec.message_post(body=f"IRBM Error: {str(e)}")
+                rec.message_post(body=f"{str(e)}")
 
     lhdn_status = fields.Char(string="Status")
     lhdn_uuid = fields.Char(string="UUID")
