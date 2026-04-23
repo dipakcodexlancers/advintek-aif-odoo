@@ -71,7 +71,7 @@ class AccountMove(models.Model):
                 )
                 
                 if login_response.status_code == 200:(
-                    rec.message_post("Successfully connected to IRBM..")
+                    rec.message_post(body="Successfully connected to IRBM..")
                 )
                 # rec.message_post(
                 #     body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
