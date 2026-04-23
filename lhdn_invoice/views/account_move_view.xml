@@ -31,14 +31,14 @@
 
                     <group>
                         <group>
-                            <field name="lhdn_status"/>
-                            <field name="lhdn_uuid"/>
-                            <field name="lhdn_validation_date"/>
+                            <field name="lhdn_status" readonly="1"/>
+                            <field name="lhdn_uuid" readonly="1"/>
+                            <field name="lhdn_validation_date" readonly="1"/>
                         </group>
 
                         <group>
-                            <field name="lhdn_validation_link"/>
-                            <field name="lhdn_rejection_result"/>
+                            <field name="lhdn_validation_link" readonly="1"/>
+                            <field name="lhdn_rejection_result" readonly="1"/>
                         </group>
                     </group>
 
