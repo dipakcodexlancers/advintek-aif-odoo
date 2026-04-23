@@ -70,9 +70,9 @@ class AccountMove(models.Model):
                     timeout=50
                 )
                 
-                if login_response.status_code == 200:(
-                    rec.message_post(body="Successfully connected to IRBM..")
-                )
+                if login_response.status_code == 200:
+                    rec.message_post(body="Successfully connected to IRBM.")
+                
                 # rec.message_post(
                 #     body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
                 # )
