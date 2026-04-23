@@ -112,7 +112,6 @@ class AccountMove(models.Model):
                     timeout=500
                 )
 
-                # rec.message_post(body=f"SubmitInvoiceDocument Response | Status: {response.status_code} | Body: {response.text}")
                 rec.message_post(
                     body=(
                         f"IRBM Submit Invoice Response:\n"
@@ -120,7 +119,28 @@ class AccountMove(models.Model):
                         f"- Response: {response.text}"
                     )
                 )
+                
+                if response.status_code == 200:
+                    try:
+                        result = response.json()
 
+                        if result.get("statusCode") == 200 and result.get("isSuccess"):
+                            data = result.get("data", {})
+
+                            rec.lhdn_status = data.get("status")
+                            rec.lhdn_uuid = data.get("uniquedocumentID")
+                            rec.lhdn_validation_link = data.get("validationLink")
+
+                            dt = data.get("dateTimeValidated")
+                            if dt:
+                                rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
+
+                            rec.lhdn_rejection_result = False
+
+                    except Exception as e:
+                        rec.lhdn_status = "Error"
+                        rec.lhdn_rejection_result = str(e)
+        
                 # if response.status_code == 200:
                 #     data = response.json()
 
