@@ -21,7 +21,7 @@
                         string="IRBM Submission"
                         type="object"
                         class="btn-primary"
-                        attrs="{'invisible': [('state', '=', 'draft')]}"
+                        invisible="state == 'draft'"
                 />
             </xpath>
 
