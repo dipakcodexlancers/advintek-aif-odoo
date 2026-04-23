@@ -59,7 +59,7 @@ class AccountMove(models.Model):
                 )
                 
                 if login_response.status_code == 200:
-                    rec.message_post(body="Successfully connected to IRBM.")
+                    rec.message_post(body="Successfully connected to IRBM...")
                 
                 if login_response.status_code != 200:
                     raise Exception(f"Unable to establish a connection with IRBM: {login_response.text}")
@@ -85,13 +85,7 @@ class AccountMove(models.Model):
                     timeout=500
                 )
 
-                rec.message_post(
-                    body=(
-                        f"IRBM Submit Invoice Response:\n"
-                        f"- Status Code: {response.status_code}\n"
-                        f"- Response: {response.text}"
-                    )
-                )
+                # rec.message_post(body=f"IRBM Submit Invoice Response:\n{response.text}")
                 
                 if response.status_code == 200:
                     
@@ -117,12 +111,24 @@ class AccountMove(models.Model):
                                 rec.lhdn_validation_result = json.dumps(parsed, indent=4)
                             except Exception:
                                 rec.lhdn_validation_result = raw_validation
+
+                        rec.message_post(body="IRBM submission completed successfully...")
                 
+                elif response.status_code != 200:
+                    try:
+                        result = response.json()
+
+                        rec.lhdn_rejection_result = (
+                            result.get("data", {}).get("validationResults")
+                            or result.get("message")
+                            or False
+                        )
+
+                    except Exception:
+                        rec.lhdn_rejection_result = False
+        
             except Exception as e:
-                rec.lhdn_status = "Error"
-                rec.lhdn_rejection_result = str(e)
-                
-                rec.message_post(body=f"{str(e)}")
+                rec.message_post(body=f"IRBM Error: {str(e)}")
                 
     # IRBM Submission Details Fields
     lhdn_status = fields.Char(string="Status", readonly=True)

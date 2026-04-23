@@ -13,7 +13,7 @@
                         type="object"
                         class="btn-primary"
                 />
-                <!-- invisible="state != 'posted'" -->
+                invisible="state != 'posted'"
             </xpath>
 
         </field>
