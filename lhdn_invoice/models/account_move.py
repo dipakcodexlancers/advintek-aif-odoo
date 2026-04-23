@@ -136,54 +136,29 @@ class AccountMove(models.Model):
                                 rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
 
                             rec.lhdn_rejection_result = False
+                            # rec.lhdn_validation_result = data.get("validationResults")
+                            raw_validation = data.get("validationResults")
+
+                            if raw_validation:
+                                try:
+                                    parsed = json.loads(raw_validation)
+                                    rec.lhdn_validation_result = json.dumps(parsed, indent=4)
+                                except Exception:
+                                    rec.lhdn_validation_result = raw_validation
 
                     except Exception as e:
                         rec.lhdn_status = "Error"
                         rec.lhdn_rejection_result = str(e)
-        
-                # if response.status_code == 200:
-                #     data = response.json()
-
-                #     rec.lhdn_status = data.get("status")
-                #     rec.lhdn_uuid = data.get("uuid")
-                #     rec.lhdn_validation_link = data.get("validation_link")
-
-                #     rec.lhdn_validation_date = datetime.now()
-
-                #     rec.lhdn_rejection_result = data.get("rejection_result")
-
-                #     if data.get("status") == "Success":
-                #         rec.message_post(body="IRBM submission successful")
-                #     else:
-                #         rec.message_post(body=f"IRBM submission failed : {data.get('message')}")
-
-                # else:
-                #     try:
-                #         error_data = response.json()
-                #         error_msg = error_data.get("message", response.text)
-                #     except Exception:
-                #         error_msg = response.text
-
-                #     rec.lhdn_status = "Failed"
-                #     rec.lhdn_rejection_result = error_msg
-
-                #     rec.message_post(body=f"IRBM Submission Failed: {error_msg}")
                 
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
-
-                # rec.message_post(body=f"IRBM Error: {str(e)}")
+                
                 rec.message_post(body=f"{str(e)}")
-
-    # lhdn_status = fields.Char(string="Status")
-    # lhdn_uuid = fields.Char(string="UUID")
-    # lhdn_validation_date = fields.Datetime(string="Validation Date")
-    # lhdn_validation_link = fields.Char(string="Validation Link")
-    # lhdn_rejection_result = fields.Text(string="Rejection Result")
     
     lhdn_status = fields.Char(string="Status", readonly=True)
     lhdn_uuid = fields.Char(string="UUID", readonly=True)
     lhdn_validation_date = fields.Datetime(string="Validation Date", readonly=True)
     lhdn_validation_link = fields.Char(string="Validation Link", readonly=True)
+    lhdn_validation_result = fields.Text(string="Validation Result", readonly=True)
     lhdn_rejection_result = fields.Text(string="Rejection Result", readonly=True)
