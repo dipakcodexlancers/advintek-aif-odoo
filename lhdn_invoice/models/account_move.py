@@ -14,16 +14,6 @@ class AccountMove(models.Model):
 
             payload = {
                 "invoice": rec.read()[0],
-                # "invoice": {
-                #     **invoice_data,
-                #     "lines": [
-                #         {
-                #             **line.read()[0],
-                #             "taxes": [tax.read()[0] for tax in line.tax_ids]
-                #         }
-                #         for line in rec.invoice_line_ids
-                #     ]
-                # },
 
                 "partner": rec.partner_id.read()[0] if rec.partner_id else {},
 
@@ -37,8 +27,6 @@ class AccountMove(models.Model):
                     for line in rec.invoice_line_ids
                 ]
             }
-            
-            # rec.message_post(body=payload)
 
             invoice_type_map = {
                 "out_invoice": "01",
@@ -73,13 +61,6 @@ class AccountMove(models.Model):
                 if login_response.status_code == 200:
                     rec.message_post(body="Successfully connected to IRBM.")
                 
-                # rec.message_post(
-                #     body=f"IRBM Login | Status: {login_response.status_code} | Body: {login_response.text}"
-                # )
-
-                # if login_response.status_code != 200:
-                #     raise Exception(f"Login API Failed: {login_response.text}")
-                
                 if login_response.status_code != 200:
                     raise Exception(f"Unable to establish a connection with IRBM: {login_response.text}")
                 
@@ -96,14 +77,6 @@ class AccountMove(models.Model):
                     "Authorization": f"Bearer {token}"
                 }
 
-                # response = requests.post(
-                #     url,
-                #     headers=headers,
-                #     params={"InvoiceTypeCode": invoice_type_code},
-                #     data=json.dumps(payload, default=str),
-                #     timeout=10000
-                # )
-                
                 response = requests.post(
                     submit_url,
                     headers=headers,
@@ -121,41 +94,37 @@ class AccountMove(models.Model):
                 )
                 
                 if response.status_code == 200:
-                    try:
-                        result = response.json()
+                    
+                    result = response.json()
 
-                        if result.get("statusCode") == 200 and result.get("isSuccess"):
-                            data = result.get("data", {})
+                    if result.get("statusCode") == 200 and result.get("isSuccess"):
+                        data = result.get("data", {})
 
-                            rec.lhdn_status = data.get("status")
-                            rec.lhdn_uuid = data.get("uniquedocumentID")
-                            rec.lhdn_validation_link = data.get("validationLink")
+                        rec.lhdn_status = data.get("status")
+                        rec.lhdn_uuid = data.get("uniquedocumentID")
+                        rec.lhdn_validation_link = data.get("validationLink")
 
-                            dt = data.get("dateTimeValidated")
-                            if dt:
-                                rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
+                        dt = data.get("dateTimeValidated")
+                        if dt:
+                            rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
 
-                            rec.lhdn_rejection_result = False
-                            # rec.lhdn_validation_result = data.get("validationResults")
-                            raw_validation = data.get("validationResults")
+                        rec.lhdn_rejection_result = False
+                        raw_validation = data.get("validationResults")
 
-                            if raw_validation:
-                                try:
-                                    parsed = json.loads(raw_validation)
-                                    rec.lhdn_validation_result = json.dumps(parsed, indent=4)
-                                except Exception:
-                                    rec.lhdn_validation_result = raw_validation
-
-                    except Exception as e:
-                        rec.lhdn_status = "Error"
-                        rec.lhdn_rejection_result = str(e)
+                        if raw_validation:
+                            try:
+                                parsed = json.loads(raw_validation)
+                                rec.lhdn_validation_result = json.dumps(parsed, indent=4)
+                            except Exception:
+                                rec.lhdn_validation_result = raw_validation
                 
             except Exception as e:
                 rec.lhdn_status = "Error"
                 rec.lhdn_rejection_result = str(e)
                 
                 rec.message_post(body=f"{str(e)}")
-    
+                
+    # IRBM Submission Details Fields
     lhdn_status = fields.Char(string="Status", readonly=True)
     lhdn_uuid = fields.Char(string="UUID", readonly=True)
     lhdn_validation_date = fields.Datetime(string="Validation Date", readonly=True)
