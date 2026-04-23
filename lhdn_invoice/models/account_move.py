@@ -59,7 +59,7 @@ class AccountMove(models.Model):
                 )
                 
                 if login_response.status_code == 200:
-                    rec.message_post(body="Successfully connected to IRBM...")
+                    rec.message_post(body="Successfully connected to IRBM")
                 
                 if login_response.status_code != 200:
                     raise Exception(f"Unable to establish a connection with IRBM: {login_response.text}")
@@ -112,7 +112,7 @@ class AccountMove(models.Model):
                             except Exception:
                                 rec.lhdn_validation_result = raw_validation
 
-                        rec.message_post(body="IRBM submission completed successfully...")
+                        rec.message_post(body="IRBM submission completed successfully")
                 
                 elif response.status_code != 200:
                     try:
@@ -123,6 +123,8 @@ class AccountMove(models.Model):
                             or result.get("message")
                             or False
                         )
+                        rec.lhdn_status= "IRBMResponseFailed"
+                        rec.message_post(body="IRBM submission failed.")
 
                     except Exception:
                         rec.lhdn_rejection_result = False
