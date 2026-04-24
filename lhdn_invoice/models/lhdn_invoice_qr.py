@@ -9,8 +9,8 @@ class AccountMove(models.Model):
 
     lhdn_qr_code = fields.Binary(
         string="LHDN QR Code",
-        compute="_compute_lhdn_qr_code",
-        store=True
+        compute="_compute_lhdn_qr_code"
+        # store=True
     )
 
     @api.depends('lhdn_validation_link')
