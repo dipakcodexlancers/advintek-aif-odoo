@@ -2,15 +2,20 @@
     <template id="report_invoice_document_inherit_qr"
               inherit_id="account.report_invoice_document">
 
-        <xpath expr="//div[contains(@class, 'total')]" position="after">
+        <xpath expr="//div[@class='page']" position="inside">
 
             <t t-if="o.lhdn_qr_code">
-                <div style="margin-top: 10px; text-align: right;">
+                <div style="
+                    position:absolute;
+                    right:40px;
+                    bottom:120px;
+                    text-align:center;
+                ">
 
                     <img t-att-src="'/web/image?model=account.move&amp;id=%s&amp;field=lhdn_qr_code' % o.id"
                          style="width:110px;height:110px;"/>
 
-                    <div style="font-size: 11px; color:#555; margin-top:5px;">
+                    <div style="font-size:11px; color:#555; margin-top:5px;">
                         Scan to Verify Invoice
                     </div>
 
