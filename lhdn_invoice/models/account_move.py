@@ -2,15 +2,16 @@ from odoo import models, fields
 import requests
 import json
 from datetime import datetime
-
+from odoo.exceptions import UserError
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
     def action_submit_irbm(self):
         for rec in self:
-
-            invoice_data = rec.read()[0]
+            
+            if rec.lhdn_status == 'IRBResponseSuccess':
+                raise UserError("IRBM submission already completed for this invoice.")
 
             payload = {
                 "invoice": rec.read()[0],
