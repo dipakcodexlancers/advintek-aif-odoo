@@ -46,7 +46,7 @@
                         </group>
 
                         <group>
-                            <field name="lhdn_validation_link"/>
+                            <field name="lhdn_validation_link" widget="url"/>
                             <field name="lhdn_rejection_result"/>
                         </group>
                     </group>
