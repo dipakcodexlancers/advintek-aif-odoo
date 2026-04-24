@@ -114,7 +114,7 @@ class AccountMove(models.Model):
                 elif response.status_code != 200:
                     try:
                         result = response.json()
-
+                        rec.message_post(body=str(result))
                         rec.lhdn_rejection_result = (
                             result.get("data", {}).get("validationResults")
                             or result.get("message")
