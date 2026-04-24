@@ -18,7 +18,6 @@ class AccountMove(models.Model):
         for rec in self:
             try:
                 if rec.lhdn_validation_link:
-                    rec.message_post(body=f"[QR] Link found: {rec.lhdn_validation_link}")
 
                     qr = qrcode.QRCode(version=1, box_size=6, border=2)
                     qr.add_data(rec.lhdn_validation_link)
@@ -30,19 +29,17 @@ class AccountMove(models.Model):
                     img.save(buffer, format="PNG")
 
                     qr_bytes = buffer.getvalue()
-                    rec.message_post(body=f"[QR] Image bytes length: {len(qr_bytes)}")
 
                     qr_base64 = base64.b64encode(qr_bytes).decode('utf-8')
-                    rec.message_post(body=f"[QR] Base64 length: {len(qr_base64)}")
 
                     rec.lhdn_qr_code = qr_base64
 
-                    rec.message_post(body="[QR] QR code generated successfully")
+                    rec.message_post(body="QR code generated successfully.")
 
                 else:
                     rec.lhdn_qr_code = False
-                    rec.message_post(body="[QR] No validation link found")
+                    rec.message_post(body="Validation link missing. QR code not generated.")
 
             except Exception as e:
                 rec.lhdn_qr_code = False
-                rec.message_post(body=f"[QR ERROR] {str(e)}")
+                rec.message_post(body="QR code generation failed due to an unexpected error.")

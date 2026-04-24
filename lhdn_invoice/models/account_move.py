@@ -103,14 +103,6 @@ class AccountMove(models.Model):
                             rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
 
                         rec.lhdn_rejection_result = False
-                        raw_validation = data.get("validationResults")
-
-                        if raw_validation:
-                            try:
-                                parsed = json.loads(raw_validation)
-                                rec.lhdn_validation_result = json.dumps(parsed, indent=4)
-                            except Exception:
-                                rec.lhdn_validation_result = raw_validation
 
                         rec.message_post(body="IRBM submission completed successfully")
                 
@@ -130,12 +122,11 @@ class AccountMove(models.Model):
                         rec.lhdn_rejection_result = False
         
             except Exception as e:
-                rec.message_post(body=f"IRBM Error: {str(e)}")
+                rec.message_post(body=f"IRBM submission failed. Error: {str(e)}")
                 
     # IRBM Submission Details Fields
     lhdn_status = fields.Char(string="Status", readonly=True)
     lhdn_uuid = fields.Char(string="UUID", readonly=True)
     lhdn_validation_date = fields.Datetime(string="Validation Date", readonly=True)
     lhdn_validation_link = fields.Char(string="Validation Link", readonly=True)
-    lhdn_validation_result = fields.Text(string="Validation Result", readonly=True)
     lhdn_rejection_result = fields.Text(string="Rejection Result", readonly=True)

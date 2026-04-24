@@ -43,12 +43,11 @@
                             <field name="lhdn_status"/>
                             <field name="lhdn_uuid"/>
                             <field name="lhdn_validation_date"/>
-                            <field name="lhdn_validation_link"/>
                         </group>
 
                         <group>
+                            <field name="lhdn_validation_link"/>
                             <field name="lhdn_rejection_result"/>
-                            <field name="lhdn_validation_result"/>
                         </group>
                     </group>
 
