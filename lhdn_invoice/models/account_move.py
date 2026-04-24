@@ -103,8 +103,11 @@ class AccountMove(models.Model):
                         dt = data.get("dateTimeValidated")
                         if dt:
                             rec.lhdn_validation_date = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%SZ")
-
-                        rec.lhdn_rejection_result = False
+                        
+                        if data.get("status") != "IRBResponseSuccess":
+                            rec.lhdn_rejection_result = result.get("data", {}).get("validationResults")
+                        else:
+                            rec.lhdn_rejection_result = False
 
                         rec.message_post(body="IRBM submission completed successfully")
                 
@@ -117,7 +120,7 @@ class AccountMove(models.Model):
                             or result.get("message")
                             or False
                         )
-                        rec.lhdn_status= "IRBMResponseFailed"
+                        # rec.lhdn_status= "IRBMResponseFailed"
                         rec.message_post(body="IRBM submission failed")
 
                     except Exception:
