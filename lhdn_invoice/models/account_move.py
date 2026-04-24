@@ -129,4 +129,5 @@ class AccountMove(models.Model):
     lhdn_uuid = fields.Char(string="UUID", readonly=True)
     lhdn_validation_date = fields.Datetime(string="Validation Date", readonly=True)
     lhdn_validation_link = fields.Char(string="Validation Link", readonly=True)
+    lhdn_validation_result = fields.Text(string="Validation Result", readonly=True)
     lhdn_rejection_result = fields.Text(string="Rejection Result", readonly=True)
