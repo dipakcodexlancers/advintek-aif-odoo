@@ -2,7 +2,7 @@
     <template id="report_invoice_document_inherit_qr"
               inherit_id="account.report_invoice_document">
 
-        <xpath expr="//div[@class='page']" position="inside">
+        <xpath expr="//t[@t-call='web.external_layout']" position="inside">
 
             <t t-if="o.lhdn_qr_code">
                 <div style="
