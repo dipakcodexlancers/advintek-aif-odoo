@@ -6,7 +6,7 @@
 
             <t t-if="o.lhdn_qr_code">
                 <div style="margin-top: 20px;">
-                    <strong>Invoice QR</strong><br/>
+                    <!-- <strong>Invoice QR</strong><br/> -->
 
                     <img t-if="o.lhdn_qr_code"
                          t-att-src="'/web/image?model=account.move&amp;id=%s&amp;field=lhdn_qr_code' % o.id"
