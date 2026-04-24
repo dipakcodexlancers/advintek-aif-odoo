@@ -34,12 +34,12 @@ class AccountMove(models.Model):
 
                     rec.lhdn_qr_code = qr_base64
 
-                    rec.message_post(body="QR code generated successfully.")
+                    # rec.message_post(body="QR code generated successfully.")
 
                 else:
                     rec.lhdn_qr_code = False
-                    rec.message_post(body="Validation link missing. QR code not generated.")
+                    # rec.message_post(body="Validation link missing. QR code not generated.")
 
             except Exception as e:
                 rec.lhdn_qr_code = False
-                rec.message_post(body="QR code generation failed due to an unexpected error.")
+                # rec.message_post(body="QR code generation failed due to an unexpected error.")
