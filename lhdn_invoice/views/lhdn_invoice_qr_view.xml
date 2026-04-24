@@ -8,10 +8,9 @@
                 <div style="margin-top: 20px;">
                     <strong>LHDN QR Code</strong><br/>
 
-                         <img t-if="o.lhdn_qr_code"
-                            t-att-src="'/web/image?model=account.move&id=%s&field=lhdn_qr_code' % o.id"
-                            style="width:120px;height:120px;"/>
-                            
+                    <img t-if="o.lhdn_qr_code"
+                         t-att-src="'/web/image?model=account.move&amp;id=%s&amp;field=lhdn_qr_code' % o.id"
+                         style="width:120px;height:120px;"/>
                 </div>
             </t>
 
