@@ -10,6 +10,7 @@
         'views/account_move_view.xml',
         'views/res_partner_view.xml',
         'views/res_company_view.xml',
+        'views/lhdn_invoice_qr_view.xml',
     ],
     'installable': True,
     'application': False,

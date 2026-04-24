@@ -1,0 +1,19 @@
+<odoo>
+    <template id="report_invoice_document_inherit_qr"
+              inherit_id="account.report_invoice_document">
+
+        <xpath expr="//div[contains(@class, 'page')]" position="inside">
+
+            <t t-if="o.lhdn_qr_code">
+                <div style="margin-top: 20px;">
+                    <strong>LHDN QR Code</strong><br/>
+
+                    <img t-att-src="'data:image/png;base64,%s' % o.lhdn_qr_code"
+                         style="width:120px;height:120px;"/>
+                </div>
+            </t>
+
+        </xpath>
+
+    </template>
+</odoo>
