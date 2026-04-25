@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 class AccountMove(models.Model):
     _inherit = 'account.move'
 
+    # IRBM Submission
     def action_submit_irbm(self):
         for rec in self:
             
@@ -127,6 +128,23 @@ class AccountMove(models.Model):
         
             except Exception as e:
                 rec.message_post(body=f"IRBM submission failed. Error: {str(e)}")
+    
+    # Reset IRBM fields for credit note
+    def _reverse_moves(self, default_values_list=None, cancel=False):
+        moves = super()._reverse_moves(default_values_list, cancel)
+
+        for move in moves:
+            if move.move_type == 'out_refund':
+                move.write({
+                    'lhdn_status': False,
+                    'lhdn_uuid': False,
+                    'lhdn_validation_date': False,
+                    'lhdn_validation_link': False,
+                    'lhdn_validation_result': False,
+                    'lhdn_rejection_result': False,
+                })
+
+        return moves
                 
     # IRBM Submission Details Fields
     lhdn_status = fields.Char(string="Status", readonly=True)
