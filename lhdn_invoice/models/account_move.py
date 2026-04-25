@@ -63,8 +63,8 @@ class AccountMove(models.Model):
                     rec.message_post(body="Successfully connected to IRBM")
                 
                 if login_response.status_code != 200:
-                    # raise Exception(f"Unable to establish a connection with IRBM: {login_response.text}")
-                    rec.message_post(body="Unable to establish a connection with IRBM")
+                    # rec.message_post(body="Unable to establish a connection with IRBM")
+                    raise UserError("Unable to establish a connection with IRBM. Please try again later.")
                 
                 login_data = login_response.json()
                 token = login_data.get("data", {}).get("token")
