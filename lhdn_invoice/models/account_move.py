@@ -109,6 +109,9 @@ class AccountMove(models.Model):
                             rec.lhdn_rejection_result = result.get("data", {}).get("validationResults")
                         else:
                             rec.lhdn_rejection_result = False
+                        
+                        if invoice_type_code == "01":
+                            rec.lhdn_original_invoice_irbm_unique_no = data.get("uniquedocumentID")
 
                         rec.message_post(body="IRBM submission completed successfully")
                 
@@ -153,3 +156,5 @@ class AccountMove(models.Model):
     lhdn_validation_link = fields.Char(string="Validation Link", readonly=True)
     lhdn_validation_result = fields.Text(string="Validation Result", readonly=True)
     lhdn_rejection_result = fields.Text(string="Rejection Result", readonly=True)
+    
+    lhdn_original_invoice_irbm_unique_no = fields.Char(string="OriginalInvoiceIRBMUniqueNo", readonly=True)
