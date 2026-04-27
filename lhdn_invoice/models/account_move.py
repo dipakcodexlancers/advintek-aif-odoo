@@ -64,8 +64,9 @@ class AccountMove(models.Model):
                     rec.message_post(body="Successfully connected to IRBM")
                 
                 if login_response.status_code != 200:
-                    # rec.message_post(body="Unable to establish a connection with IRBM")
-                    raise UserError("Unable to establish a connection with IRBM. Please try again later.")
+                    rec.message_post(body="Unable to establish a connection with IRBM. Please try again later.")
+                    return
+                    # raise UserError("Unable to establish a connection with IRBM. Please try again later.")
                 
                 login_data = login_response.json()
                 token = login_data.get("data", {}).get("token")
@@ -137,7 +138,8 @@ class AccountMove(models.Model):
         moves = super()._reverse_moves(default_values_list, cancel)
 
         for move in moves:
-            if move.move_type == 'out_refund':
+            # if move.move_type == 'out_refund':
+            if move.move_type == 'out_refund' or move.move_type == 'in_refund':
                 move.write({
                     'lhdn_status': False,
                     'lhdn_uuid': False,
