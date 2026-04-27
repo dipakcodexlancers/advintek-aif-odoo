@@ -111,7 +111,7 @@ class AccountMove(models.Model):
                         else:
                             rec.lhdn_rejection_result = False
                         
-                        if invoice_type_code == "01":
+                        if invoice_type_code == "01" or invoice_type_code == "11":
                             rec.lhdn_original_invoice_irbm_unique_no = data.get("uniquedocumentID")
 
                         rec.message_post(body="IRBM submission completed successfully")
