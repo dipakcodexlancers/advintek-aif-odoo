@@ -57,7 +57,7 @@ class AccountMove(models.Model):
                     login_url,
                     headers=login_headers,
                     json=login_payload,
-                    timeout=30
+                    timeout=50
                 )
                 
                 if login_response.status_code == 200:
@@ -86,7 +86,7 @@ class AccountMove(models.Model):
                     headers=headers,
                     params={"eInvoiceTypeCode": invoice_type_code},
                     data=json.dumps(payload, default=str),
-                    timeout=120
+                    timeout=500
                 )
 
                 # rec.message_post(body=f"IRBM Submit Invoice Response:\n{response.text}")
